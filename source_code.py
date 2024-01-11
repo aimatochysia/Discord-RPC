@@ -1,4 +1,5 @@
 #This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License] (CC BY-NC-SA)
+import os
 import random
 import win32gui
 import sys
@@ -133,7 +134,7 @@ def update_rpc(data_list):
             details=var_text,
             state="RPC by Petra Michael",
             start="1",
-            buttons=[{"label": group_names[random.randint(0, len(group_names) - 1)], "url": "https://www.scopus.com/authid/detail.uri?authorId=58788050800"}]
+            buttons=[{"label": "Github Repository", "url": "https://github.com/aimatochysia/Discord-RPC"}]
         )
         print("-------------------------")
         print(var_text)
@@ -141,8 +142,33 @@ def update_rpc(data_list):
         time.sleep(3)
 
 
-group_names = ["Latest Research Paper", "Latest Published Paper"]
-RPC = Presence("YOUR_DISCORD_APP_CLIENT_ID")
+
+file_path = "saved_client_id.md"
+if os.path.exists(file_path):
+    with open(file_path, 'r') as file:
+        existing_client_id = file.read().strip()
+    if existing_client_id:
+        print(f"Found existing client ID: {existing_client_id}")
+        use_existing = input("Do you want to use the existing client ID? (y/n): ").lower()
+        if use_existing == 'y':
+            client_id = existing_client_id
+        else:
+            client_id = input("Enter your Discord app client ID: ")
+    else:
+        client_id = input("Enter your Discord app client ID: ")
+else:
+    client_id = input("Enter your Discord app client ID: ")
+
+
+save_option = input("Do you want to save this client ID to a file? (y/n): ").lower()
+if save_option == 'y':
+    with open(file_path, 'w') as file:
+        file.write(client_id)
+    print(f"Client ID saved to {file_path}")
+else:
+    print("Client ID not saved.")
+    
+RPC = Presence(client_id)
 RPC.connect()
 print("running. . .")
 
